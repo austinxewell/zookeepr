@@ -8,11 +8,9 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
-
+app.use(express.static('public'));
 
 const {animals} = require('./data/animals.json')
-
-
 
 function filterByQuery(query, animalsArray) {
     let personalityTraitsArray = [];
@@ -53,7 +51,6 @@ function filterByQuery(query, animalsArray) {
     return filteredResults;
   }
 
-
   function findById(id, animalsArray) {
     const result = animalsArray.filter(animal => animal.id === id)[0];
     return result;
@@ -85,8 +82,6 @@ function filterByQuery(query, animalsArray) {
     return true;
   }
 
-
-
 app.get('/api/animals', (req, res) => {
     let results = animals;
     if (req.query) {
@@ -115,6 +110,22 @@ app.get('/api/animals/:id', (req, res) => {
       const animal = createNewAnimal(req.body, animals);
       res.json(animal);
     }
+  });
+
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+  });
+
+  app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+  });
+
+  app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+  });
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
   });
 
 app.listen(PORT, () => {
